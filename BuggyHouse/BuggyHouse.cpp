@@ -60,9 +60,9 @@ void BuggyHouse::CheckBugs()
 
 		// 1.2. 벌레의 상태를 확인한 후 없앤다.
 		auto it = std::remove_if(mBugs.begin(), mBugs.end(),
-			[&](auto &actor)
+			[&](const std::unique_ptr<Bug> &bug) -> bool
 			{
-				Bug* pBug = static_cast<Bug*>(actor.get());
+				Bug* pBug = bug.get();
 				pBug->IsClicked(pt);
 
 				if (pBug->mIsDeleted)
