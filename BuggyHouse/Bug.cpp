@@ -96,23 +96,25 @@ void Bug::Draw()
 	};
 	
 	// 전진한다.
-	auto target = UPVECTOR* D2D1::Matrix3x2F::Rotation(mRotation);
-	mX += target.x;
+	//		1. 단위 벡터를 이용하여 현재 진행할 위치를 구한다.
+	auto target = UPVECTOR * D2D1::Matrix3x2F::Rotation(mRotation);	
+	
+	//		2. 위에서 구한 위치를 더한다.
+	mX += target.x; 
 	mY += target.y;
 	
-	// 이동 행렬을 만든다.
-	auto matTranslate = D2D1::Matrix3x2F::Translation(mX, mY);
+
+	auto matTranslate = D2D1::Matrix3x2F::Translation(mX, mY); // 이동 행렬을 만든다.
 	auto matRotation = D2D1::Matrix3x2F::Rotation(
 		mRotation, //각도
 		D2D_POINT_2F{size.width * 0.5f, size.height * 0.5f }	// 중심축
 	);
 
+	// 원점을 기준으로 그린다.
 	auto pRT = mpFramework->GetRenderTarget();
-	// 원점에 그린상태에서 회전하고 이동한다.
-	pRT->SetTransform(matRotation * matTranslate);	// 행렬(위치)을 구한다
-
-	// 비트맵에 그린다.
-	pRT->DrawBitmap(mpBitmap, rect, mOpacity);
+	
+	pRT->SetTransform(matRotation * matTranslate);	// 변환된 행렬(위치)을 지정한다. -->회전하고 이동
+	pRT->DrawBitmap(mpBitmap, rect, mOpacity);	// 비트맵에 그린다.
 }
 
 bool Bug::IsClicked(POINT& pt)
